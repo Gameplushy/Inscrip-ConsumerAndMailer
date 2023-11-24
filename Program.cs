@@ -4,6 +4,8 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
+using System.Net.Mail;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 Console.WriteLine("Press enter to finish the program.");
@@ -29,7 +31,8 @@ try
                 }
                 else
                 {
-                    Console.WriteLine($"You should send a mail to {insc.FullName} at {insc.MailAddress}");
+                    Console.WriteLine($"Sending a mail to {insc.FullName} at {insc.MailAddress}");
+                    SendMail(insc);
                 }
             };
 
@@ -41,4 +44,28 @@ try
 catch (BrokerUnreachableException bue)
 {
     Console.WriteLine("Rabbit server broker was not found. Did you forget to turn on its Docker image?");
+}
+
+void SendMail(Inscription insc)
+{
+    MailMessage message = new MailMessage("inscrip.examp@fakemail.com", insc.MailAddress)
+    {
+        Subject = "You're signed up!",
+        Body = $"Hello {insc.FullName}! You are now signed up to our database.",
+        IsBodyHtml = false
+    };
+
+    using (var smtpClient = new SmtpClient("localhost", 1025))
+    {
+        smtpClient.EnableSsl = false;
+        try
+        {
+            smtpClient.Send(message);
+            Console.WriteLine($"Message successfully sent to {insc.MailAddress}!");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Message failed... {e.Message}\n{e.StackTrace}");
+        }
+    }
 }
