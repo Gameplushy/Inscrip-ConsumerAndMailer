@@ -22,7 +22,6 @@ using (var conn = factory.CreateConnection())
         };
 
         ch.BasicConsume(queue: "myQueue", autoAck: true, consumer: consumer);
+        Console.ReadLine(); //This exists so the program doesn't end immediately
     }
 }
-
-Console.ReadLine(); //This exists so the program doesn't end immediately
