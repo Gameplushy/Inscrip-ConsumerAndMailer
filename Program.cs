@@ -50,7 +50,9 @@ void SendMail(Inscription insc)
     MailMessage message = new MailMessage("inscrip.examp@fakemail.com", insc.MailAddress)
     {
         Subject = "You're signed up!",
-        Body = $"Hello {insc.FullName}! You are now signed up to our database.",
+        Body = $@"Hello {insc.FullName}! You are now signed up to our database.
+
+JWT : {insc.JWT}",
         IsBodyHtml = false
     };
 
