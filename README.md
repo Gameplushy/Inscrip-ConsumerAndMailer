@@ -5,7 +5,7 @@ The consumer part of the AMQP-MailHog pipeline, using C#, EntityFramework, OpenA
 ## Prerequisites
 
 You'll need :
-- Visual Studio 2022 (with "ASP.NET and web development" kit) (Optional, you can use the cmd if you don't need to debug it.)
+- Visual Studio 2022
 - DotNET 7 (download the SDK [here](https://dotnet.microsoft.com/en-us/download/dotnet/7.0))
 - Docker
 
