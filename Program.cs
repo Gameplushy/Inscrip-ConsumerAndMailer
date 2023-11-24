@@ -40,7 +40,7 @@ try
         }
     }
 }
-catch (BrokerUnreachableException bue)
+catch (BrokerUnreachableException)
 {
     Console.WriteLine("Rabbit server broker was not found. Did you forget to turn on its Docker image?");
 }
