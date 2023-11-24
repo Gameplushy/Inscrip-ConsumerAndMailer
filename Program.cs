@@ -3,35 +3,42 @@ using ConsumerAndMailer;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 using System.Text;
 
 Console.WriteLine("Press enter to finish the program.");
-
-ConnectionFactory factory = new ConnectionFactory();
-factory.Uri = new Uri("amqp://guest:guest@localhost:5672/%2f");
-
-using (var conn = factory.CreateConnection())
+try
 {
-    using (var ch = conn.CreateModel())
+    ConnectionFactory factory = new ConnectionFactory();
+    factory.Uri = new Uri("amqp://guest:guest@localhost:5672/%2f");
+
+    using (var conn = factory.CreateConnection())
     {
-        var consumer = new EventingBasicConsumer(ch);
-
-        consumer.Received += (model, ea) =>
+        using (var ch = conn.CreateModel())
         {
-            var body = ea.Body.ToArray();
-            var message = Encoding.UTF8.GetString(body);
-            Inscription? insc = JsonConvert.DeserializeObject<Inscription>(message);
-            if(insc == null)
-            {
-                Console.WriteLine("Unable to decode " + message);
-            }
-            else
-            {
-                Console.WriteLine($"You should send a mail to {insc.FullName} at {insc.MailAddress}");
-            }
-        };
+            var consumer = new EventingBasicConsumer(ch);
 
-        ch.BasicConsume(queue: "myQueue", autoAck: true, consumer: consumer);
-        Console.ReadLine(); //This exists so the program doesn't end immediately
+            consumer.Received += (model, ea) =>
+            {
+                var body = ea.Body.ToArray();
+                var message = Encoding.UTF8.GetString(body);
+                Inscription? insc = JsonConvert.DeserializeObject<Inscription>(message);
+                if (insc == null)
+                {
+                    Console.WriteLine("Unable to decode " + message);
+                }
+                else
+                {
+                    Console.WriteLine($"You should send a mail to {insc.FullName} at {insc.MailAddress}");
+                }
+            };
+
+            ch.BasicConsume(queue: "myQueue", autoAck: true, consumer: consumer);
+            Console.ReadLine(); //This exists so the program doesn't end immediately
+        }
     }
+}
+catch (BrokerUnreachableException bue)
+{
+    Console.WriteLine("Rabbit server broker was not found. Did you forget to turn on its Docker image?");
 }
