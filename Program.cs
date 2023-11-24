@@ -1,4 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using ConsumerAndMailer;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
@@ -18,7 +20,15 @@ using (var conn = factory.CreateConnection())
         {
             var body = ea.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
-            Console.WriteLine($"Received message: {message}");
+            Inscription? insc = JsonConvert.DeserializeObject<Inscription>(message);
+            if(insc == null)
+            {
+                Console.WriteLine("Unable to decode " + message);
+            }
+            else
+            {
+                Console.WriteLine($"You should send a mail to {insc.FullName} at {insc.MailAddress}");
+            }
         };
 
         ch.BasicConsume(queue: "myQueue", autoAck: true, consumer: consumer);
