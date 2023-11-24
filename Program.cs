@@ -5,7 +5,6 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
 using System.Net.Mail;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 Console.WriteLine("Press enter to finish the program.");
