@@ -37,3 +37,6 @@ In cmd, use `dotnet run`. A console should open. It will check for RabbitMQ mess
 
 ### Using the exe
 Execute the exe file. A console should open. It will check for RabbitMQ messages and send mail afterwards. Logging will be present. Press enter to stop the program.
+
+## Warning
+Make sure the queue int RabbitMQ already exists before turning on this app, otherwise it will crash.
